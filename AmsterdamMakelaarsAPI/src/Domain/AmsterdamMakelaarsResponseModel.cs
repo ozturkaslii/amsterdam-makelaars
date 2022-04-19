@@ -2,6 +2,6 @@ namespace Domain;
 
 public class AmsterdamMakelaarsResponseModel
 {
-    public string MakelaarNaam { get; set; }
-    public int Places { get; set; }
+    public string RealEstateAgent { get; set; }
+    public int ListingCount { get; set; }
 }

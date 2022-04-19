@@ -23,10 +23,10 @@ public class AmsterdamMakelaarsHttpClient : IAmsterdamMakelaarsHttpClient
     public async Task<AmsterdamMakelaarsModel?> GetAsync(string queryParam, int currentPage, CancellationToken cancellationToken)
     {
         var httpClient = _clientFactory.CreateClient(Client);
-        var key = _options.CurrentValue.AmsterdamMakelaarHttpClient.TemporaryKey;
+        var temporaryKey = _options.CurrentValue.AmsterdamMakelaarHttpClient.TemporaryKey;
         
         var makelaarsModel = await httpClient.GetFromJsonAsync<AmsterdamMakelaarsModel>
-        ($"feeds/Aanbod.svc/json/{key}/?type=koop&zo=/amsterdam{queryParam}/&page={currentPage}&p%20agesize=25",
+        ($"feeds/Aanbod.svc/json/{temporaryKey}/?type=koop&zo=/amsterdam{queryParam}/&page={currentPage}&p%20agesize=25",
             cancellationToken);
 
         if (makelaarsModel != null && !makelaarsModel.Objects.Any())

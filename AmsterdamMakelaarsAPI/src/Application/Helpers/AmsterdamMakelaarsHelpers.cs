@@ -9,7 +9,6 @@ public static class AmsterdamMakelaarsHelpers
     public static async Task<List<AmsterdamMakelaarsResponseModel>> GetAmsterdamMakelaarsResponseList(
         IAmsterdamMakelaarsHttpClient httpClient, string queryParam, CancellationToken cancellationToken)
     {
-        //TODO: refactor naming
         var currentPage = 1;
         var realEstateModel = await httpClient.GetAsync(queryParam,currentPage, cancellationToken);
 
@@ -22,7 +21,7 @@ public static class AmsterdamMakelaarsHelpers
         var totalObjects = realEstateModel.TotaalAantalObjecten;
         var pageSize = 15;
         
-        var orderedList = GetOrderedDictionary(realEstateModel);
+        var orderedDictionary = GetOrderedDictionary(realEstateModel);
         var resultDict = new Dictionary<string, int>();
         while (totalObjects >= currentPage * pageSize)
         {
@@ -34,7 +33,7 @@ public static class AmsterdamMakelaarsHelpers
             
             var newOrderedList = GetOrderedDictionary(realEstateModel);
 
-            resultDict = ReturnOrderedDictionary(orderedList, newOrderedList);
+            resultDict = ReturnOrderedDictionary(orderedDictionary, newOrderedList);
         }
 
         var topTenResult = resultDict.Take(10);
@@ -44,8 +43,8 @@ public static class AmsterdamMakelaarsHelpers
         {
             var model = new AmsterdamMakelaarsResponseModel
             {
-                MakelaarNaam = key,
-                Places = value
+                RealEstateAgent = key,
+                ListingCount = value
             };
 
             responseList.Add(model);
@@ -62,9 +61,9 @@ public static class AmsterdamMakelaarsHelpers
         return model.Objects
             .GroupBy(q => q.MakelaarNaam,
                 q => q.Woonplaats,
-                (key, g) => new AmsterdamMakelaarsResponseModel{ MakelaarNaam = key, Places = g.Count() })
-            .OrderByDescending(q => q.Places)
-            .ToDictionary(q=> q.MakelaarNaam, v => v.Places);
+                (key, g) => new AmsterdamMakelaarsResponseModel{ RealEstateAgent = key, ListingCount = g.Count() })
+            .OrderByDescending(q => q.ListingCount)
+            .ToDictionary(q=> q.RealEstateAgent, v => v.ListingCount);
     }
 
     public static Dictionary<string, int> ReturnOrderedDictionary(Dictionary<string, int> currentDict, Dictionary<string, int> newDict)
