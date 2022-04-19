@@ -54,6 +54,8 @@ builder.Services.AddMediatR(Assembly.Load("Application"));
 
 #endregion
 
+//This is added for resilience.
+//External funda API has limitation such as 100 requests/min
 var policy = HttpPolicyExtensions
     .HandleTransientHttpError() // HttpRequestException, 5XX and 408
     .OrResult(response => (int)response.StatusCode == 401) // RetryAfter
